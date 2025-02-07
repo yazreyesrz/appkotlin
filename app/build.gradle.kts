@@ -55,6 +55,12 @@ dependencies {
     implementation(libs.coroutines.android)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.livedata.ktx)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.0-alpha")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")  // Verifica la última versión en el sitio oficial
+    implementation ("androidx.activity:activity-compose:1.7.2")
+    implementation ("androidx.navigation:navigation-compose:2.7.2")
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
