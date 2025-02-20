@@ -11,6 +11,6 @@ class LocationViewModelFactory(private val context: Context) : ViewModelProvider
             @Suppress("UNCHECKED_CAST")
             return LocationViewModel(LocationRepository(context)) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Clase ViewModel desconocida")
     }
 }

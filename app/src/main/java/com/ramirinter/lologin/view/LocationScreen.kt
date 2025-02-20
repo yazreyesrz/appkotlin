@@ -3,7 +3,6 @@ package com.ramirinter.lologin.view
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.location.Location
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,39 +16,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ramirinter.lologin.viewmodel.LocationViewModel
+import com.ramirinter.lologin.viewmodel.LocationViewModelFactory
 
 @Composable
 fun LocationScreen() {
     val context = LocalContext.current
-    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-    var location by remember { mutableStateOf<Location?>(null) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val locationViewModel: LocationViewModel = viewModel(factory = LocationViewModelFactory(context))
+    val location by locationViewModel.location.collectAsState()
+    val errorMessage by locationViewModel.errorMessage.collectAsState()
 
     val backgroundColor = Color(0xFFEFEFEF) // Gris claro
     val primaryColor = Color(0xFF3B5998) // Azul no tan fuerte
     val secondaryColor = Color(0xFF6D7A8B) // Gris más oscuro para contraste
 
-    fun fetchLocation() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
-                if (loc != null) {
-                    location = loc
-                } else {
-                    errorMessage = "No se pudo obtener la ubicación"
-                }
-            }.addOnFailureListener {
-                errorMessage = "Error al obtener la ubicación"
-            }
-        } else {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1001
-            )
-        }
+    LaunchedEffect(Unit) {
+        locationViewModel.fetchLocation()
     }
 
     Column(
@@ -94,7 +77,7 @@ fun LocationScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { fetchLocation() },
+            onClick = { locationViewModel.fetchLocation() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
